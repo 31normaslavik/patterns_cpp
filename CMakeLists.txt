@@ -18,7 +18,11 @@ add_executable(pattern_cpp main.cpp
     iterator/iterator.h iterator/iterator.cpp
     command/command.h command/command.cpp
     composite/composite.h composite/composite.cpp
-    flyweight/flyweight.h flyweight/flyweight.cpp )
+    flyweight/flyweight.h flyweight/flyweight.cpp
+    bridge/bridge.h bridge/bridge.cpp
+    visitor/visitor.h visitor/visitor.cpp
+    mediator/mediator.h mediator/mediator.cpp
+    prototype/prototype.h prototype/prototype.cpp )
 
 include(GNUInstallDirs)
 install(TARGETS pattern_cpp

@@ -1,13 +1,17 @@
 #include "abstract_factory/abstractfactory.h"
 #include "adapter/adapter.h"
+#include "bridge/bridge.h"
 #include "command/command.h"
 #include "composite/composite.h"
 #include "decorator/decorator.h"
 #include "flyweight/flyweight.h"
 #include "iterator/iterator.h"
+#include "mediator/mediator.h"
 #include "observer/observer.h"
+#include "prototype/prototype.h"
 #include "proxy/proxy.h"
 #include "singleton/singleton.h"
+#include "visitor/visitor.h"
 #include <iostream>
 
 DatabaseHelper* DatabaseHelper::databaseConnection = nullptr;
@@ -16,7 +20,7 @@ int main()
 {
     using namespace std;
 
-    // НАБЛЮДАТЕЛЬ /////////////////////
+    cout<<"// НАБЛЮДАТЕЛЬ /////////////////////"<<endl;
 
     Product *product = new Product(400);
 
@@ -32,7 +36,7 @@ int main()
     ////////////////////////////////////
 
 
-    // Одиночка ////////////////////////
+    cout << "// Одиночка ////////////////////////"<<endl;
 
 
     //DatabaseHelper* connection = new DatabaseHelper();
@@ -45,7 +49,7 @@ int main()
     ////////////////////////////////////
 
 
-    // Абстрактная фабрика //////////////
+    cout<<"// Абстрактная фабрика //////////////"<<endl;
 
     Factory* jfactory = new JapaneseFactory();
 
@@ -66,7 +70,7 @@ int main()
     ///////////////////////////////////////////////////////
 
 
-    // Адаптер реализация на уровне классов ///////////////////////////////////////////
+    cout<<"// Адаптер реализация на уровне классов ////////////////////"<<endl;
 
     float kg = 55.0; // кг
     float lb = 55.0;  // фунты
@@ -86,7 +90,7 @@ int main()
     //////////////////////////////////////////////////////
 
 
-    // Декоратор ////////////////////////////////////////
+    cout<< "// Декоратор ////////////////////////////////////////"<<endl;
 
     Processor* transmitter = new Transmitter("12355");
     transmitter->process();
@@ -101,7 +105,7 @@ int main()
 
     /////////////////////////////////////////////////////
 
-    // Заместитель //////////////////////////////////////
+    cout<<"// Заместитель //////////////////////////////////////"<<endl;
 
     ISite* mySite = new SiteProxy(new Site());
 
@@ -115,7 +119,7 @@ int main()
 
     /////////////////////////////////////////////////////
 
-    // Итератор /////////////////////////////////////////
+    cout<<"// Итератор /////////////////////////////////////////"<<endl;
 
     DataStack stack1;
 
@@ -135,7 +139,7 @@ int main()
 
     /////////////////////////////////////////////////////
 
-    // Команда //////////////////////////////////////////
+    cout<<"// Команда //////////////////////////////////////////"<<endl;
 
     Conveyor* conveyor = new Conveyor();
 
@@ -154,7 +158,7 @@ int main()
     /////////////////////////////////////////////////////
 
 
-    // Компоновщик //////////////////////////////////////
+    cout<<"// Компоновщик //////////////////////////////////////"<<endl;
 
     Item* file = new DropDownItem("File->");
 
@@ -189,7 +193,7 @@ int main()
 
     /////////////////////////////////////////////////////
 
-    // Легковес /////////////////////////////////////////
+    cout<<"// Легковес /////////////////////////////////////////"<<endl;
 
     FlyweightFactory* factory = new FlyweightFactory({
         {"Microsoft", "Управляющий"},
@@ -216,6 +220,73 @@ int main()
 
     cout<<endl;
 
+
+    /////////////////////////////////////////////////////
+
+    cout<<"// Мост /////////////////////////////////////////////"<<endl;
+
+    Sender* sender = new EmailSander(new DataBaseReader());
+    sender->send();
+
+    sender->setDataReader(new FileReader());
+    sender->send();
+
+    sender = new TelegramBotSander(new DataBaseReader());
+    sender->send();
+
+    cout<<endl;
+
+    /////////////////////////////////////////////////////
+
+    cout<<"// Посетитель ///////////////////////////////////////"<<endl;
+
+    Zoo zoo;
+    Cinema cinema;
+    Circus circus;
+
+    Place* places[] {&zoo, &cinema, &circus};
+
+    for(auto place: places){
+        HollidayMaker visitor;
+        place->accept(visitor);
+        cout<<visitor.value<<endl;
+    }
+
+    cout<<endl;
+
+    /////////////////////////////////////////////////////
+
+    cout<<"// Медиатор /////////////////////////////////////////"<<endl;
+
+    Designer* designer = new Designer();
+    Director* director = new Director();
+
+    Controller* mediator = new Controller(designer,director);
+
+    director->giveCommand("Проектировать");
+    cout<<endl;
+    designer->executerWork();
+
+    delete designer;
+    delete director;
+    delete mediator;
+
+    cout<<endl;
+
+    /////////////////////////////////////////////////////
+
+    cout<<"// Прототип //////////////////////////////////"<<endl;
+
+    Sheep* sheepDonor = new Sheep();
+    std::string name = "Долли";
+    sheepDonor->setName(&name);
+
+    Sheep* sheepClone = sheepDonor->clone();
+
+    cout<<sheepDonor->getName()<<endl;
+    cout<<sheepClone->getName()<<endl;
+
+    cout<<endl;
 
     /////////////////////////////////////////////////////
 
