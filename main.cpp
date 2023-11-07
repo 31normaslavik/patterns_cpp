@@ -1,16 +1,24 @@
 #include "abstract_factory/abstractfactory.h"
 #include "adapter/adapter.h"
 #include "bridge/bridge.h"
+#include "builder/builder.h"
+#include "chain_of_responsibility/chainofresponsibility.h"
 #include "command/command.h"
 #include "composite/composite.h"
 #include "decorator/decorator.h"
+#include "facade/facade.h"
+#include "factory_method/factorymethod.h"
 #include "flyweight/flyweight.h"
 #include "iterator/iterator.h"
 #include "mediator/mediator.h"
+#include "memento/memento.h"
 #include "observer/observer.h"
 #include "prototype/prototype.h"
 #include "proxy/proxy.h"
 #include "singleton/singleton.h"
+#include "state/state.h"
+#include "strategy/strategy.h"
+#include "template_method/templatemethod.h"
 #include "visitor/visitor.h"
 #include <iostream>
 
@@ -290,5 +298,160 @@ int main()
 
     /////////////////////////////////////////////////////
 
+    cout<<"// Снимок //////////////////////////////////////////"<<endl;
+
+    Exchange* exchange = new Exchange(10,10);
+
+    Memory* memory = new Memory(exchange);
+
+    exchange->getDollars();
+    exchange->getEuro();
+
+    cout<<".... Продажа доллара, покупка евро ...."<<endl;
+
+    exchange->sell();
+    exchange->buy();
+
+    exchange->getDollars();
+    exchange->getEuro();
+
+    cout<<".... Сохранение состояния ............."<<endl;
+    memory->backup();
+
+    cout<<".... Продажа доллара, покупка евро ...."<<endl;
+
+    exchange->sell();
+    exchange->buy();
+
+    exchange->getDollars();
+    exchange->getEuro();
+
+    cout<<".... Восстановление состояния ............."<<endl;
+    memory->undo();
+
+    exchange->getDollars();
+    exchange->getEuro();
+
+    cout<<endl;
+
+    ////////////////////////////////////////////////////
+
+    cout<<"// Состояние ////////////////////////////////"<<endl;
+
+    TrafficLight* trafficlight = new TrafficLight(new YellowState());
+
+    trafficlight->nextState();
+    trafficlight->nextState();
+    trafficlight->previousState();
+    trafficlight->previousState();
+    trafficlight->previousState();
+
+    delete trafficlight;
+
+    cout<<endl;
+
+    ////////////////////////////////////////////////////
+
+    cout<<"// Стратегия /////////////////////////////"<<endl;
+
+    ResourceReader* resourceReader = new ResourceReader(new NewsSiteReader);
+
+    std::string url = "https://news.com";
+    resourceReader->read(url);
+
+    url = "https://facebook.com";
+    resourceReader->setStrategy(new SocialNetworkReader);
+    resourceReader->read(url);
+
+    url = "@news_channel_telegram";
+    resourceReader->setStrategy(new TelegramChannelReader);
+    resourceReader->read(url);
+
+    cout<<endl;
+
+    /////////////////////////////////////////////////////////
+
+    cout<<"// Строитель ///////////////////////////////////"<<endl;
+
+    nb::Developer* androidDeveloper= new nb::AndroidDeveloper();
+    nb::Director director_(androidDeveloper);
+
+    nb::Phone* samsung = director_.MountFullPhone();
+    cout<< samsung->aboutPhone()<<endl;
+
+    nb::Developer* iphoneDeveloper= new nb::IphoneDeveloper();
+    director_.setDeveloper(iphoneDeveloper);
+
+    nb::Phone* iphone = director_.MountOnlyPhone();
+    cout<< iphone->aboutPhone()<<endl;
+
+    cout<<endl;
+
+    /////////////////////////////////////////////////////////
+
+    cout<<"// Фабричный метод ///////////////////////////"<<endl;
+
+    fm::WorkShop* creator = new fm::CarWorkShop;
+
+    fm::Production* car = creator->create();
+
+    creator = new fm::TruckWorkShop;
+
+    fm::Production* truck = creator->create();
+
+    car->release();
+    truck->release();
+
+    cout<<endl;
+
+    /////////////////////////////////////////////////////////////
+
+    cout<<"// Фасад ////////////////////////////////////"<<endl;
+
+    fd::MarketPlace marketPlace;
+
+    marketPlace.productReceipt();
+
+    cout<<"___________________"<<endl;
+
+    marketPlace.productRelease();
+
+    cout<<endl;
+
+    ////////////////////////////////////////////////////////////
+
+    cout<<"// Цепочка обязанностей //////////////////////////"<<endl;
+
+    cr::Designer* designer_ = new cr::Designer;
+    cr::Carpenters* carpenters = new cr::Carpenters;
+    cr::FinishWorker* finishworker = new cr::FinishWorker;
+
+    designer_->setNextWorker(carpenters)->setNextWorker(finishworker);
+
+    cr::givecommand(designer_,"спроектировать дом");
+    cr::givecommand(designer_,"класть кирпич");
+    cr::givecommand(designer_,"клеить обои");
+    cr::givecommand(designer_,"провести проводку");
+
+    cout<<endl;
+
+    ////////////////////////////////////////////////////////////////
+
+    std::cout<<"// Шаблонный метод //////////////////////////////"<<endl;
+
+    tmpm::Transmitter* analogTransmitter = new tmpm::AnalogTransmitter;
+    analogTransmitter->processStart();
+
+    cout<<endl;
+
+    tmpm::Transmitter* digitalTransmiter = new tmpm::DigitalTransmitter;
+    digitalTransmiter->processStart();
+
+    delete analogTransmitter;
+    delete digitalTransmiter;
+
+    cout<<endl;
+
+    ////////////////////////////////////////////////////////////////
     return 0;
 }
